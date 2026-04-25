@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Check Status | Evans Higher Secondary School</title>
+  <style>
+    /* --- Same Global & Nav Styles --- */
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
+    body { background: #e9ecef; min-height: 100vh; display: flex; flex-direction: column; }
+    .navbar { background: #0a2f44; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; color: white; border-bottom: 4px solid #d4af37; }
+    .navbar .logo img { height: 50px; width: auto; }
+    .navbar .nav-links { display: flex; gap: 1.8rem; }
+    .navbar .nav-links a { color: white; text-decoration: none; font-weight: 500; padding: 0.5rem 0.2rem 0.7rem; position: relative; }
+    .navbar .nav-links a:hover { color: #d4af37; }
+    .navbar .nav-links a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 4px; background: #d4af37; transition: width 0.3s; }
+    .navbar .nav-links a:hover::after { width: 100%; }
+    .navbar .nav-links a.active { color: #d4af37; font-weight: 600; }
+    .navbar .nav-links a.active::after { width: 100%; }
+    .navbar .nav-links a.admin-link { background: #d4af37; color: #0a2f44; padding: 0.5rem 1.2rem; border-radius: 30px; }
+    .navbar .nav-links a.admin-link::after { display: none; }
+    .navbar .nav-links a.admin-link:hover { background: #e6c44d; }
+    .container { max-width: 600px; margin: 3rem auto; padding: 0 1.5rem; flex: 1; }
+    .status-card { background: white; border-radius: 24px; box-shadow: 0 20px 35px -8px rgba(0,0,0,0.15); overflow: hidden; }
+    .card-header { background: #0a2f44; padding: 1.8rem; text-align: center; color: white; border-bottom: 4px solid #d4af37; }
+    .card-header h2 { font-size: 1.8rem; text-transform: uppercase; }
+    .card-body { padding: 2.5rem; }
+    .form-group { margin-bottom: 1.5rem; }
+    label { font-weight: 600; display: block; margin-bottom: 0.5rem; }
+    input { width: 100%; padding: 0.9rem; border: 1.5px solid #cbd5e1; border-radius: 12px; }
+    button { background: #0a2f44; color: white; border: none; padding: 1rem; width: 100%; font-size: 1.1rem; font-weight: 600; border-radius: 40px; cursor: pointer; text-transform: uppercase; }
+    button:hover { background: #1e4a6b; }
+    #result { margin-top: 1.8rem; padding: 1.2rem; border-radius: 12px; display: none; }
+    .footer { background: #0a2f44; color: #ccc; text-align: center; padding: 1.5rem; margin-top: 2rem; }
+    .footer a { color: #d4af37; text-decoration: none; }
+    @media (max-width: 600px) { .navbar { flex-direction: column; } .card-body { padding: 1.5rem; } }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo"><img src="school-logo-white-background_917213-255784.avif" alt="Evans Higher Secondary School Logo"></div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="apply.html">Apply</a>
+      <a href="status.html" class="active">Check Status</a>
+      <a href="register.html">Register</a>
+      <a href="login.html" class="admin-link">Login</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="status-card">
+      <div class="card-header">
+        <h2>Check Admission Status</h2>
+        <p>Evans Higher Secondary School</p>
+      </div>
+      <div class="card-body">
+        <p style="text-align:center; margin-bottom:2rem;">Enter the email used during application.</p>
+        <div class="form-group"><label>Email Address</label><input type="email" id="statusEmail" placeholder="parent@example.com"></div>
+        <button onclick="checkStatus()">🔍 View Status</button>
+        <div id="result"></div>
+        <p style="margin-top:2rem; text-align:center;"><a href="apply.html">Submit a new application</a></p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>© 2026 Evans Higher Secondary School. All rights reserved.</p>
+    <p><a href="index.html">Home</a> | <a href="apply.html">Apply</a> | <a href="status.html">Check Status</a></p>
+  </footer>
+
+  <script>
+    // (same checkStatus function as before)
+    function checkStatus() {
+      const email = document.getElementById('statusEmail').value.trim().toLowerCase();
+      const resultDiv = document.getElementById('result');
+      if (!email) { resultDiv.style.display='block'; resultDiv.innerHTML='⚠️ Enter email.'; return; }
+      const demo = {
+        'approved@demo.com': { status:'approved', studentName:'John Evans Mensah', grade:'JSS 2', msg:'Congratulations! Approved.', next:'Complete registration by May 30.' },
+        'pending@demo.com': { status:'pending', studentName:'Abena Osei', grade:'SSS 1', msg:'Under review.', next:'Check back in 3-5 days.' },
+        'rejected@demo.com': { status:'rejected', studentName:'Kofi Asante', grade:'JSS 1', msg:'Not successful.', next:'Reapply next session.' }
+      };
+      const app = demo[email] || { status:'not_found', msg:'No application found.' };
+      let badge = ''; let bg, txt, border;
+      if (app.status==='approved') { badge='✅ APPROVED'; bg='#f0fdf4'; txt='#166534'; border='#86efac'; }
+      else if (app.status==='pending') { badge='⏳ PENDING'; bg='#fffbeb'; txt='#92400e'; border='#fcd34d'; }
+      else if (app.status==='rejected') { badge='❌ NOT SUCCESSFUL'; bg='#fef2f2'; txt='#991b1b'; border='#fca5a5'; }
+      else { badge='❓ NOT FOUND'; bg='#f8fafc'; txt='#475569'; border='#cbd5e1'; }
+      resultDiv.innerHTML = `<span class="status-badge">${badge}</span><p>${app.studentName ? app.studentName+' ('+app.grade+')' : ''}</p><p>${app.msg}</p><p style="font-size:0.9rem;">📌 ${app.next||''}</p>`;
+      resultDiv.style.backgroundColor=bg; resultDiv.style.color=txt; resultDiv.style.border=`1px solid ${border}`; resultDiv.style.display='block';
+    }
+    document.getElementById('statusEmail').addEventListener('keypress', e => { if(e.key==='Enter') checkStatus(); });
+  </script>
+</body>
+</html>

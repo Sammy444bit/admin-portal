@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Portal | Evans Higher Secondary School</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
+    body { background: #e9ecef; min-height: 100vh; display: flex; flex-direction: column; }
+    
+    /* Navigation Bar */
+    .navbar { background: #0a2f44; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; color: white; border-bottom: 4px solid #d4af37; }
+    .navbar .logo img { height: 50px; width: auto; }
+    .navbar .nav-links { display: flex; gap: 1.8rem; }
+    .navbar .nav-links a { color: white; text-decoration: none; font-weight:500; padding:0.5rem 0.2rem 0.7rem; position:relative; }
+    .navbar .nav-links a:hover { color: #d4af37; }
+    .navbar .nav-links a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 4px; background: #d4af37; transition: width 0.3s; }
+    .navbar .nav-links a:hover::after { width: 100%; }
+    .navbar .nav-links a.active { color: #d4af37; font-weight: 600; }
+    .navbar .nav-links a.active::after { width: 100%; }
+    .navbar .nav-links button { background: #d4af37; color: #0a2f44; border: none; padding: 0.5rem 1.2rem; border-radius: 30px; font-weight: 600; cursor: pointer; }
+    .navbar .nav-links button:hover { background: #e6c44d; }
+    
+    .container { max-width: 1100px; margin: 2rem auto; padding: 0 1.5rem; flex: 1; }
+    
+    /* Welcome header */
+    .welcome-banner { background: white; border-radius: 20px; padding: 1.5rem 2rem; margin-bottom: 2rem; box-shadow: 0 5px 15px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; }
+    .welcome-banner h2 { color: #0a2f44; }
+    .logout-btn { background: none; border: 1px solid #cbd5e1; padding: 0.5rem 1.2rem; border-radius: 30px; color: #64748b; cursor: pointer; }
+    
+    /* Status card */
+    .status-card { background: white; border-radius: 20px; padding: 1.5rem 2rem; margin-bottom: 2rem; box-shadow: 0 5px 15px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 1.5rem; }
+    .status-badge { padding: 0.5rem 1.5rem; border-radius: 50px; font-weight: 700; text-transform: uppercase; }
+    .status-pending { background: #fef3c7; color: #92400e; }
+    .status-approved { background: #d1fae5; color: #065f46; }
+    .status-rejected { background: #fee2e2; color: #991b1b; }
+    .status-info { flex: 1; }
+    .status-info h3 { font-size: 1.5rem; margin-bottom: 0.3rem; }
+    
+    /* Dashboard grid */
+    .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem; }
+    .card { background: white; border-radius: 20px; padding: 1.5rem; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+    .card h4 { color: #0a2f44; margin-bottom: 1rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.7rem; }
+    .detail-row { display: flex; margin-bottom: 0.8rem; }
+    .detail-label { width: 120px; font-weight: 600; color: #475569; }
+    .detail-value { color: #1e293b; }
+    
+    .timeline { list-style: none; }
+    .timeline li { display: flex; margin-bottom: 1rem; }
+    .timeline .date { width: 100px; font-weight: 600; color: #0a2f44; }
+    .timeline .event { color: #475569; }
+    
+    .doc-list { margin-bottom: 1rem; }
+    .doc-item { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #f1f5f9; }
+    .upload-btn { background: #0a2f44; color: white; border: none; padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.8rem; cursor: pointer; }
+    
+    .next-step { display: flex; align-items: center; padding: 0.8rem 0; border-bottom: 1px solid #f1f5f9; }
+    .step-checkbox { margin-right: 1rem; }
+    .step-text { flex: 1; }
+    .step-done { text-decoration: line-through; color: #94a3b8; }
+    
+    .btn { background: #0a2f44; color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 30px; font-weight: 600; cursor: pointer; margin-top: 1rem; }
+    .btn-gold { background: #d4af37; color: #0a2f44; }
+    
+    .footer { background: #0a2f44; color: #ccc; text-align: center; padding: 1.5rem; margin-top: 2rem; }
+    .footer a { color: #d4af37; text-decoration: none; }
+    
+    @media (max-width: 700px) { .dashboard-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo"><img src="image.png" alt="Evans Higher Secondary School Logo"></div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="student-dashboard.html" class="active">My Portal</a>
+      <a href="status.html">Check Status</a>
+      <button onclick="logout()">Logout</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- Welcome Banner -->
+    <div class="welcome-banner">
+      <div>
+        <h2>Welcome back, <span id="studentName">John Evans Mensah</span>!</h2>
+        <p style="color:#64748b;">Application ID: EVANS-2026-0421</p>
+      </div>
+      <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+    </div>
+
+    <!-- Status Card (dynamic based on application status) -->
+    <div class="status-card" id="statusCard">
+      <!-- Content will be filled by JavaScript based on demo status -->
+    </div>
+
+    <!-- Main Dashboard Grid -->
+    <div class="dashboard-grid">
+      <!-- Left Column -->
+      <div>
+        <!-- Personal Details -->
+        <div class="card">
+          <h4>📋 Personal Details</h4>
+          <div class="detail-row"><span class="detail-label">Full Name:</span><span class="detail-value" id="displayName">John Evans Mensah</span></div>
+          <div class="detail-row"><span class="detail-label">Date of Birth:</span><span class="detail-value" id="displayDob">2010-05-22</span></div>
+          <div class="detail-row"><span class="detail-label">Grade Applied:</span><span class="detail-value" id="displayGrade">JSS 2 (Grade 8)</span></div>
+          <div class="detail-row"><span class="detail-label">Parent/Guardian:</span><span class="detail-value" id="displayParent">Emeka Mensah</span></div>
+          <div class="detail-row"><span class="detail-label">Email:</span><span class="detail-value" id="displayEmail">john.mensah@example.com</span></div>
+          <div class="detail-row"><span class="detail-label">Phone:</span><span class="detail-value" id="displayPhone">08012345678</span></div>
+        </div>
+
+        <!-- Application Timeline -->
+        <div class="card">
+          <h4>⏳ Application Timeline</h4>
+          <ul class="timeline">
+            <li><span class="date">Apr 14, 2026</span><span class="event">Application Submitted</span></li>
+            <li><span class="date">Apr 15, 2026</span><span class="event">Documents Verified</span></li>
+            <li><span class="date">Apr 18, 2026</span><span class="event">Under Review by Admissions</span></li>
+            <li><span class="date" id="decisionDate">Pending</span><span class="event" id="decisionEvent">Decision Pending</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Right Column -->
+      <div>
+        <!-- Admission Letter (conditionally visible) -->
+        <div class="card" id="admissionLetterCard" style="display:none;">
+          <h4>📜 Admission Letter</h4>
+          <p style="margin-bottom:1rem;">Congratulations! Your admission has been approved.</p>
+          <button class="btn" onclick="downloadLetter()">⬇️ Download Admission Letter (PDF)</button>
+        </div>
+
+        <!-- Required Documents -->
+        <div class="card">
+          <h4>📁 Required Documents</h4>
+          <div class="doc-list" id="docList">
+            <!-- Populated by JS -->
+          </div>
+          <button class="btn" onclick="uploadDocument()" style="margin-top:0;">+ Upload New Document</button>
+        </div>
+
+        <!-- Next Steps Checklist -->
+        <div class="card">
+          <h4>✅ Next Steps</h4>
+          <div id="nextStepsList">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Support Contact -->
+    <div style="background: white; border-radius: 20px; padding: 1.5rem; text-align:center;">
+      <p>📞 Need help? Contact Admissions: <strong>admissions@evanshigher.edu</strong> | <strong>+233 24 123 4567</strong></p>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>© 2026 Evans Higher Secondary School. All rights reserved.</p>
+    <p><a href="index.html">Home</a> | <a href="apply.html">Apply</a> | <a href="status.html">Check Status</a></p>
+  </footer>
+
+  <script>
+    // Demo: Student data (simulate logged-in student)
+    const studentData = {
+      name: 'John Evans Mensah',
+      dob: '2010-05-22',
+      grade: 'JSS 2',
+      parent: 'Emeka Mensah',
+      email: 'john.mensah@example.com',
+      phone: '08012345678',
+      applicationId: 'EVANS-2026-0421',
+      status: 'pending', // 'pending', 'approved', 'rejected'
+      submittedDate: '2026-04-14',
+      documents: [
+        { name: 'Birth Certificate', uploaded: true },
+        { name: 'Previous School Report', uploaded: true },
+        { name: 'Passport Photograph', uploaded: false },
+        { name: 'Medical Form', uploaded: false }
+      ],
+      nextSteps: [
+        { text: 'Submit passport photograph', done: false },
+        { text: 'Complete medical form', done: false },
+        { text: 'Pay registration fee (₦25,000)', done: false }
+      ]
+    };
+
+    // You can change this to 'approved' or 'rejected' to test different views
+    // studentData.status = 'approved'; // Uncomment to test approved view
+
+    // Render Status Card
+    function renderStatusCard() {
+      const statusCard = document.getElementById('statusCard');
+      const status = studentData.status;
+      let badgeClass, badgeText, heading, message;
+      
+      if (status === 'approved') {
+        badgeClass = 'status-approved'; badgeText = 'Approved';
+        heading = 'Congratulations!';
+        message = 'Your admission to Evans Higher Secondary School has been approved.';
+      } else if (status === 'rejected') {
+        badgeClass = 'status-rejected'; badgeText = 'Not Successful';
+        heading = 'We regret to inform you';
+        message = 'Your application was not successful this year. You may reapply next session.';
+      } else {
+        badgeClass = 'status-pending'; badgeText = 'Pending Review';
+        heading = 'Application Under Review';
+        message = 'Your application is being processed. We will notify you once a decision is made.';
+      }
+      
+      statusCard.innerHTML = `
+        <span class="status-badge ${badgeClass}">${badgeText}</span>
+        <div class="status-info">
+          <h3>${heading}</h3>
+          <p>${message}</p>
+          <p style="margin-top:0.5rem; font-size:0.9rem;">Application ID: ${studentData.applicationId}</p>
+        </div>
+      `;
+    }
+
+    // Render personal details
+    function renderPersonalDetails() {
+      document.getElementById('displayName').textContent = studentData.name;
+      document.getElementById('displayDob').textContent = studentData.dob;
+      document.getElementById('displayGrade').textContent = studentData.grade;
+      document.getElementById('displayParent').textContent = studentData.parent;
+      document.getElementById('displayEmail').textContent = studentData.email;
+      document.getElementById('displayPhone').textContent = studentData.phone;
+      document.getElementById('studentName').textContent = studentData.name.split(' ')[0];
+    }
+
+    // Render timeline
+    function renderTimeline() {
+      const decisionDateEl = document.getElementById('decisionDate');
+      const decisionEventEl = document.getElementById('decisionEvent');
+      if (studentData.status === 'approved') {
+        decisionDateEl.textContent = 'Apr 20, 2026';
+        decisionEventEl.textContent = 'Admission Approved';
+      } else if (studentData.status === 'rejected') {
+        decisionDateEl.textContent = 'Apr 20, 2026';
+        decisionEventEl.textContent = 'Application Unsuccessful';
+      } else {
+        decisionDateEl.textContent = 'Pending';
+        decisionEventEl.textContent = 'Awaiting Decision';
+      }
+    }
+
+    // Render documents
+    function renderDocuments() {
+      const docList = document.getElementById('docList');
+      docList.innerHTML = studentData.documents.map(doc => `
+        <div class="doc-item">
+          <span>${doc.name} ${doc.uploaded ? '✅' : '⚠️'}</span>
+          <button class="upload-btn" onclick="uploadDocument('${doc.name}')">${doc.uploaded ? 'View' : 'Upload'}</button>
+        </div>
+      `).join('');
+    }
+
+    // Render next steps
+    function renderNextSteps() {
+      const container = document.getElementById('nextStepsList');
+      container.innerHTML = studentData.nextSteps.map((step, idx) => `
+        <div class="next-step">
+          <input type="checkbox" class="step-checkbox" ${step.done ? 'checked disabled' : ''} onchange="toggleStep(${idx})">
+          <span class="step-text ${step.done ? 'step-done' : ''}">${step.text}</span>
+        </div>
+      `).join('');
+    }
+
+    // Show/hide admission letter based on status
+    function renderAdmissionLetter() {
+      const letterCard = document.getElementById('admissionLetterCard');
+      if (studentData.status === 'approved') {
+        letterCard.style.display = 'block';
+      } else {
+        letterCard.style.display = 'none';
+      }
+    }
+
+    // Initialize page
+    renderStatusCard();
+    renderPersonalDetails();
+    renderTimeline();
+    renderDocuments();
+    renderNextSteps();
+    renderAdmissionLetter();
+
+    // Helper functions
+    function toggleStep(idx) {
+      studentData.nextSteps[idx].done = !studentData.nextSteps[idx].done;
+      renderNextSteps();
+    }
+
+    function uploadDocument(docName) {
+      alert(`Demo: Upload dialog for "${docName || 'new document'}" would open.`);
+    }
+
+    function downloadLetter() {
+      alert('Demo: Admission letter PDF would download.');
+    }
+
+    function logout() {
+      if (confirm('Are you sure you want to logout?')) {
+        window.location.href = 'login.html';
+      }
+    }
+
+    // Sync with demo data (if you change studentData.status above, reload will reflect)
+  </script>
+</body>
+</html>

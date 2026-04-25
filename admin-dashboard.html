@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | Evans Higher Secondary School</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
+    body { background: #f1f5f9; min-height: 100vh; display: flex; flex-direction: column; }
+    
+    /* Navigation */
+    .navbar { background: #0a2f44; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; color: white; border-bottom: 4px solid #d4af37; }
+    .navbar .logo img { height: 50px; width: auto; }
+    .navbar .nav-links { display: flex; gap: 1.8rem; align-items: center; }
+    .navbar .nav-links a { color: white; text-decoration: none; font-weight: 500; padding: 0.5rem 0.2rem 0.7rem; position: relative; }
+    .navbar .nav-links a:hover { color: #d4af37; }
+    .navbar .nav-links a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 4px; background: #d4af37; transition: width 0.3s; }
+    .navbar .nav-links a:hover::after { width: 100%; }
+    .navbar .nav-links a.active { color: #d4af37; font-weight: 600; }
+    .navbar .nav-links a.active::after { width: 100%; }
+    .navbar .nav-links button { background: #d4af37; color: #0a2f44; border: none; padding: 0.5rem 1.2rem; border-radius: 30px; font-weight: 600; cursor: pointer; }
+    .navbar .nav-links button:hover { background: #e6c44d; }
+    
+    .container { max-width: 1400px; margin: 2rem auto; padding: 0 1.5rem; flex: 1; width: 100%; }
+    
+    /* Header */
+    .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+    .dashboard-header h1 { color: #0a2f44; font-size: 2rem; }
+    .stats { display: flex; gap: 1.5rem; }
+    .stat-card { background: white; padding: 1rem 1.5rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center; }
+    .stat-card .number { font-size: 2rem; font-weight: 700; color: #0a2f44; }
+    .stat-card .label { color: #64748b; font-size: 0.9rem; }
+    
+    /* Filters */
+    .filter-bar { display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .search-box { flex: 1; min-width: 250px; }
+    .search-box input { width: 100%; padding: 0.75rem 1rem; border: 1.5px solid #cbd5e1; border-radius: 30px; font-size: 1rem; }
+    .filter-select { padding: 0.75rem 1rem; border: 1.5px solid #cbd5e1; border-radius: 30px; background: white; min-width: 150px; }
+    .export-btn { background: #0a2f44; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 30px; font-weight: 600; cursor: pointer; }
+    
+    /* Table */
+    .table-wrapper { background: white; border-radius: 20px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; padding: 1.2rem 1rem; background: #f8fafc; color: #0a2f44; font-weight: 600; border-bottom: 2px solid #e2e8f0; }
+    td { padding: 1rem; border-bottom: 1px solid #e2e8f0; color: #334155; }
+    tr:hover { background: #f8fafc; }
+    
+    .status-badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 30px; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; }
+    .status-pending { background: #fef3c7; color: #92400e; }
+    .status-approved { background: #d1fae5; color: #065f46; }
+    .status-rejected { background: #fee2e2; color: #991b1b; }
+    
+    .action-btn { border: none; padding: 0.4rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; cursor: pointer; margin-right: 0.3rem; transition: all 0.2s; }
+    .approve-btn { background: #10b981; color: white; }
+    .approve-btn:hover { background: #059669; }
+    .reject-btn { background: #ef4444; color: white; }
+    .reject-btn:hover { background: #dc2626; }
+    .view-btn { background: #3b82f6; color: white; }
+    
+    .loading, .error { text-align: center; padding: 3rem; font-size: 1.2rem; }
+    .error { color: #dc2626; }
+    
+    .footer { background: #0a2f44; color: #ccc; text-align: center; padding: 1.5rem; margin-top: 2rem; }
+    .footer a { color: #d4af37; text-decoration: none; }
+    
+    @media (max-width: 768px) { .dashboard-header { flex-direction: column; align-items: start; gap: 1rem; } }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo"><img src="school-logo-white-background_917213-255784.avif" alt="Evans Higher Secondary School Logo"></div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="apply.html">Apply</a>
+      <a href="status.html">Check Status</a>
+      <a href="admin-dashboard.html" class="active">Admin</a>
+      <button id="logoutBtn">Logout</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="dashboard-header">
+      <h1>📋 Admission Applications</h1>
+      <div class="stats">
+        <div class="stat-card"><div class="number" id="totalCount">0</div><div class="label">Total</div></div>
+        <div class="stat-card"><div class="number" id="pendingCount">0</div><div class="label">Pending</div></div>
+        <div class="stat-card"><div class="number" id="approvedCount">0</div><div class="label">Approved</div></div>
+      </div>
+    </div>
+
+    <div class="filter-bar">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="🔍 Search by name or email...">
+      </div>
+      <select id="statusFilter" class="filter-select">
+        <option value="all">All Status</option>
+        <option value="pending">Pending</option>
+        <option value="approved">Approved</option>
+        <option value="rejected">Rejected</option>
+      </select>
+      <button class="export-btn" onclick="exportToCSV()">📥 Export CSV</button>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th><th>Student Name</th><th>Grade</th><th>Parent</th><th>Email</th><th>Phone</th><th>Submitted</th><th>Status</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <tr><td colspan="9" class="loading">Loading applications...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>© 2026 Evans Higher Secondary School. All rights reserved. | Admin Dashboard</p>
+  </footer>
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+  
+    // ⚠️ Replace with your actual Supabase URL and anon key
+    const supabaseUrl = 'https://jrjsgfemezusuwcondku.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpyanNnZmVtZXp1c3V3Y29uZGt1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNzA5ODYsImV4cCI6MjA5MTc0Njk4Nn0.55-KRYeoa3DDuZA5g4js5WWPB10yCKNf5gWtcwRH3V8';
+    const supabase = createClient(supabaseUrl, supabaseKey);
+  
+    // Tab switching logic (unchanged)
+    let currentRole = 'student';
+    
+    window.switchRole = function(role) {
+      currentRole = role;
+      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+      if (role === 'student') document.querySelectorAll('.tab')[0].classList.add('active');
+      else if (role === 'parent') document.querySelectorAll('.tab')[1].classList.add('active');
+      else document.querySelectorAll('.tab')[2].classList.add('active');
+      
+      const registerText = document.getElementById('registerText');
+      const registerLink = document.getElementById('registerLink');
+      if (role === 'student') {
+        registerText.textContent = 'New student?';
+        registerLink.textContent = 'Apply for admission';
+        registerLink.href = 'apply.html';
+      } else if (role === 'parent') {
+        registerText.textContent = 'Don\'t have a parent account?';
+        registerLink.textContent = 'Register here';
+        registerLink.href = 'register.html';
+      } else {
+        registerText.textContent = 'Admin access only.';
+        registerLink.textContent = 'Contact system admin';
+        registerLink.href = '#';
+        registerLink.onclick = (e) => { e.preventDefault(); alert('Admin accounts are created by the system administrator.'); };
+      }
+    };
+  
+    // Handle login form submission
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const msgDiv = document.getElementById('loginMessage');
+      
+      if (!email || !password) {
+        msgDiv.innerHTML = '⚠️ Please enter both email and password.';
+        msgDiv.style.backgroundColor = '#fef3c7';
+        msgDiv.style.color = '#92400e';
+        msgDiv.style.border = '1px solid #fbbf24';
+        return;
+      }
+  
+      msgDiv.innerHTML = '⏳ Authenticating...';
+      msgDiv.style.backgroundColor = '#eff6ff';
+      msgDiv.style.color = '#1e40af';
+      msgDiv.style.border = '1px solid #93c5fd';
+  
+      // Sign in with Supabase Auth
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password
+      });
+  
+      if (error) {
+        msgDiv.innerHTML = `❌ Login failed: ${error.message}`;
+        msgDiv.style.backgroundColor = '#fee2e2';
+        msgDiv.style.color = '#991b1b';
+        msgDiv.style.border = '1px solid #fca5a5';
+        return;
+      }
+  
+      // Login successful
+      msgDiv.innerHTML = '✅ Login successful! Redirecting...';
+      msgDiv.style.backgroundColor = '#f0fdf4';
+      msgDiv.style.color = '#166534';
+      msgDiv.style.border = '1px solid #86efac';
+  
+      // Determine redirect based on role (or user metadata)
+      // For now, we'll redirect based on the selected tab
+      setTimeout(() => {
+        if (currentRole === 'admin') {
+          window.location.href = 'admin-dashboard.html';
+        } else if (currentRole === 'student') {
+          window.location.href = 'student-dashboard.html';
+        } else {
+          // Parent portal (to be built)
+          alert('Parent portal is coming soon!');
+          // window.location.href = 'parent-dashboard.html';
+        }
+      }, 1500);
+    });
+  
+    // Initialize: check if already logged in
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      // User is already logged in, redirect appropriately
+      // You can add logic here to redirect based on user role
+      console.log('Already logged in as:', session.user.email);
+    }
+  </script>
+</body>
+</html>

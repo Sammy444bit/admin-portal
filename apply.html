@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apply Now | Evans Higher Secondary School</title>
+  <style>
+    /* --- Global & Nav Styles (identical to index.html) --- */
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
+    body { background: #e9ecef; min-height: 100vh; display: flex; flex-direction: column; }
+    
+    .navbar { background: #0a2f44; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; color: white; border-bottom: 4px solid #d4af37; }
+    .navbar .logo img { height: 50px; width: auto; }
+    .navbar .nav-links { display: flex; gap: 1.8rem; }
+    .navbar .nav-links a { color: white; text-decoration: none; font-weight: 500; padding: 0.5rem 0.2rem 0.7rem; border-radius: 0; transition: color 0.2s; position: relative; }
+    .navbar .nav-links a:hover { color: #d4af37; }
+    .navbar .nav-links a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 4px; background: #d4af37; transition: width 0.3s ease; }
+    .navbar .nav-links a:hover::after { width: 100%; }
+    .navbar .nav-links a.active { color: #d4af37; font-weight: 600; }
+    .navbar .nav-links a.active::after { width: 100%; }
+    .navbar .nav-links a.admin-link { background: #d4af37; color: #0a2f44; padding: 0.5rem 1.2rem; border-radius: 30px; }
+    .navbar .nav-links a.admin-link::after { display: none; }
+    .navbar .nav-links a.admin-link:hover { background: #e6c44d; color: #0a2f44; }
+    
+    .container { max-width: 800px; margin: 2rem auto; padding: 0 1.5rem; flex: 1; }
+    .form-card { background: white; border-radius: 24px; box-shadow: 0 20px 35px -8px rgba(0,0,0,0.15); overflow: hidden; }
+    .form-header { background: #0a2f44; padding: 1.8rem 2rem; text-align: center; color: white; border-bottom: 4px solid #d4af37; }
+    .form-header h1 { font-size: 2rem; font-weight: 600; text-transform: uppercase; }
+    .form-header .welcome-text { font-size: 1rem; opacity: 0.9; margin-bottom: 0.3rem; }
+    .form-content { padding: 2.5rem; }
+    .section-title { color: #0a2f44; font-size: 1.3rem; font-weight: 600; margin-bottom: 1.5rem; border-left: 5px solid #d4af37; padding-left: 1rem; }
+    .form-group { margin-bottom: 1.5rem; }
+    label { display: block; font-weight: 600; color: #1e293b; margin-bottom: 0.4rem; }
+    label .required { color: #c53030; margin-left: 4px; }
+    input, select, textarea { width: 100%; padding: 0.85rem 1rem; border: 1.5px solid #cbd5e1; border-radius: 12px; font-size: 1rem; background: #fafbfc; }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: #0a2f44; box-shadow: 0 0 0 3px rgba(10,47,68,0.1); background: white; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+    button { background: #0a2f44; color: white; border: none; padding: 1rem 2rem; font-size: 1.1rem; font-weight: 600; border-radius: 40px; width: 100%; cursor: pointer; text-transform: uppercase; }
+    button:hover { background: #1e4a6b; transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+    #message { margin-top: 1.5rem; text-align: center; font-weight: 500; padding: 0.75rem; border-radius: 8px; }
+    .footer { background: #0a2f44; color: #ccc; text-align: center; padding: 1.5rem; margin-top: 2rem; }
+    .footer a { color: #d4af37; text-decoration: none; }
+    @media (max-width: 600px) { .navbar { flex-direction: column; } .form-content { padding: 1.5rem; } .row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo"><img src="school-logo-white-background_917213-255784.avif" alt="Evans Higher Secondary School Logo"></div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="apply.html" class="active">Apply</a>
+      <a href="status.html">Check Status</a>
+      <a href="register.html">Register</a>
+      <a href="login.html" class="admin-link"> Login</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="form-card">
+      <div class="form-header">
+        <div class="welcome-text">Welcome to Evans Higher Secondary School</div>
+        <h1>Admission Application</h1>
+      </div>
+      <div class="form-content">
+        <div class="section-title">📋 Student Information</div>
+        <p style="margin-bottom:1.8rem; color:#475569;">Fields marked <span style="color:#c53030;">*</span> are required.</p>
+        <form id="applicationForm">
+          <!-- same form fields as before -->
+          <div class="form-group"><label>Student Full Name <span class="required">*</span></label><input type="text" name="student_name" placeholder="e.g., John Evans Mensah" required></div>
+          <div class="row">
+            <div class="form-group"><label>Date of Birth <span class="required">*</span></label><input type="date" name="dob" required></div>
+            <div class="form-group"><label>Grade Applying For <span class="required">*</span></label><select name="grade_applying" required><option value="">-- Select --</option><option value="JSS1">JSS 1</option><option value="JSS2">JSS 2</option><option value="JSS3">JSS 3</option><option value="SSS1">SSS 1</option><option value="SSS2">SSS 2</option></select></div>
+          </div>
+          <div class="form-group"><label>Parent / Guardian Name <span class="required">*</span></label><input type="text" name="parent_name" placeholder="Full name" required></div>
+          <div class="row">
+            <div class="form-group"><label>Email <span class="required">*</span></label><input type="email" name="email" placeholder="parent@example.com" required></div>
+            <div class="form-group"><label>Phone <span class="required">*</span></label><input type="tel" name="phone" placeholder="024XXXXXXX" required></div>
+          </div>
+          <div class="form-group"><label>Address <span class="required">*</span></label><textarea name="address" rows="2" placeholder="Street, City" required></textarea></div>
+          <div class="form-group"><label>Previous School</label><input type="text" name="previous_school" placeholder="Name of last school"></div>
+          <input type="hidden" name="status" value="pending">
+          <button type="submit">✏️ Submit Application</button>
+          <div id="message"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>© 2026 Evans Higher Secondary School. All rights reserved.</p>
+    <p><a href="index.html">Home</a> | <a href="apply.html">Apply</a> | <a href="status.html">Check Status</a> | <a href="login.html">Admin</a></p>
+  </footer>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+  
+    const supabaseUrl = 'https://jrjsgfemezusuwcondku.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpyanNnZmVtZXp1c3V3Y29uZGt1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNzA5ODYsImV4cCI6MjA5MTc0Njk4Nn0.55-KRYeoa3DDuZA5g4js5WWPB10yCKNf5gWtcwRH3V8';
+    const supabase = createClient(supabaseUrl, supabaseKey);
+  
+    const form = document.getElementById('applicationForm');
+    const msgDiv = document.getElementById('message');
+  
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      msgDiv.innerHTML = 'Submitting...';
+      
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+      
+      console.log('Sending data:', data); // Check browser console
+  
+      const { error } = await supabase.from('applications').insert([data]);
+      
+      if (error) {
+        console.error('Supabase error:', error);
+        msgDiv.innerHTML = 'Error: ' + error.message;
+      } else {
+        msgDiv.innerHTML = '✅ Application submitted successfully!';
+        form.reset();
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parent Registration | Evans Higher Secondary School</title>
+  <style>
+    /* Global Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+    }
+    body {
+      background: #e9ecef;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* Navigation Bar */
+    .navbar {
+      background: #0a2f44;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+      border-bottom: 4px solid #d4af37;
+    }
+    .navbar .logo img {
+      height: 50px;
+      width: auto;
+    }
+    .navbar .nav-links {
+      display: flex;
+      gap: 1.8rem;
+    }
+    .navbar .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.5rem 0.2rem 0.7rem;
+      border-radius: 0;
+      transition: color 0.2s;
+      position: relative;
+    }
+    .navbar .nav-links a:hover {
+      color: #d4af37;
+    }
+    /* Active underline indicator */
+    .navbar .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 4px;
+      background: #d4af37;
+      transition: width 0.3s ease;
+    }
+    .navbar .nav-links a:hover::after {
+      width: 100%;
+    }
+    .navbar .nav-links a.active {
+      color: #d4af37;
+      font-weight: 600;
+    }
+    .navbar .nav-links a.active::after {
+      width: 100%;
+    }
+    /* Admin button special */
+    .navbar .nav-links a.admin-link {
+      background: #d4af37;
+      color: #0a2f44;
+      padding: 0.5rem 1.2rem;
+      border-radius: 30px;
+    }
+    .navbar .nav-links a.admin-link::after {
+      display: none;
+    }
+    .navbar .nav-links a.admin-link:hover {
+      background: #e6c44d;
+      color: #0a2f44;
+    }
+    .navbar .nav-links a.admin-link.active {
+      background: #e6c44d;
+      color: #0a2f44;
+    }
+    
+    /* Main Container */
+    .container {
+      max-width: 600px;
+      margin: 3rem auto;
+      padding: 0 1.5rem;
+      flex: 1;
+    }
+    
+    /* Registration Card */
+    .register-card {
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 20px 35px -8px rgba(0,0,0,0.15);
+      overflow: hidden;
+    }
+    
+    /* Card Header */
+    .card-header {
+      background: #0a2f44;
+      padding: 1.8rem 2rem;
+      text-align: center;
+      color: white;
+      border-bottom: 4px solid #d4af37;
+    }
+    .card-header h2 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .card-header p {
+      font-size: 1rem;
+      opacity: 0.9;
+      margin-top: 0.3rem;
+    }
+    
+    /* Card Body */
+    .card-body {
+      padding: 2.5rem;
+    }
+    .info-text {
+      text-align: center;
+      color: #4a5568;
+      margin-bottom: 2rem;
+    }
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
+    }
+    label .required {
+      color: #c53030;
+      margin-left: 4px;
+    }
+    input {
+      width: 100%;
+      padding: 0.9rem 1rem;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 12px;
+      font-size: 1rem;
+      transition: all 0.2s;
+      background: #fafbfc;
+    }
+    input:focus {
+      outline: none;
+      border-color: #0a2f44;
+      box-shadow: 0 0 0 3px rgba(10,47,68,0.1);
+      background: white;
+    }
+    button {
+      background: #0a2f44;
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border-radius: 40px;
+      width: 100%;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 0.5rem;
+    }
+    button:hover {
+      background: #1e4a6b;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+    }
+    
+    /* Message area */
+    #regMessage {
+      margin-top: 1.5rem;
+      padding: 0.75rem;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: 500;
+    }
+    
+    /* Footer */
+    .footer {
+      background: #0a2f44;
+      color: #ccc;
+      text-align: center;
+      padding: 1.5rem;
+      margin-top: 2rem;
+    }
+    .footer a {
+      color: #d4af37;
+      text-decoration: none;
+    }
+    
+    /* Responsive */
+    @media (max-width: 600px) {
+      .navbar {
+        flex-direction: column;
+        gap: 0.8rem;
+      }
+      .card-body {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation with Logo and Active Indicator -->
+  <nav class="navbar">
+    <div class="logo">
+      <!-- Update the src path to your actual logo file -->
+      <img src="school-logo-white-background_917213-255784.avif" alt="Evans Higher Secondary School Logo">
+    </div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="apply.html">Apply</a>
+      <a href="status.html">Check Status</a>
+      <a href="register.html" class="active">Register</a>
+      <a href="login.html" class="admin-link">Login</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="register-card">
+      <div class="card-header">
+        <h2>Parent Portal</h2>
+        <p>Create an account to track applications</p>
+      </div>
+      
+      <div class="card-body">
+        <div class="info-text">
+          <p>Register to manage multiple student applications, receive updates, and download admission letters.</p>
+        </div>
+        
+        <form id="registrationForm" onsubmit="registerParent(event)">
+          <div class="form-group">
+            <label>Full Name <span class="required">*</span></label>
+            <input type="text" id="regName" placeholder="Your full name" required>
+          </div>
+          
+          <div class="form-group">
+            <label>Email Address <span class="required">*</span></label>
+            <input type="email" id="regEmail" placeholder="parent@example.com" required>
+          </div>
+          
+          <div class="form-group">
+            <label>Phone Number <span class="required">*</span></label>
+            <input type="tel" id="regPhone" placeholder="024XXXXXXX / 080XXXXXXXX" required>
+          </div>
+          
+          <div class="form-group">
+            <label>Password <span class="required">*</span></label>
+            <input type="password" id="regPassword" placeholder="Minimum 6 characters" required>
+          </div>
+          
+          <div class="form-group">
+            <label>Confirm Password <span class="required">*</span></label>
+            <input type="password" id="regConfirm" placeholder="Re-enter password" required>
+          </div>
+          
+          <button type="submit">📋 Register Account</button>
+          <div id="regMessage"></div>
+        </form>
+        
+        <p style="margin-top: 2rem; font-size: 0.9rem; text-align: center; color: #64748b;">
+          Already have an account? <a href="login.html" style="color:#0a2f44; font-weight:600;">Sign in here</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>© 2026 Evans Higher Secondary School. All rights reserved.</p>
+    <p style="margin-top:0.5rem;">
+      <a href="index.html">Home</a> | 
+      <a href="apply.html">Apply</a> | 
+      <a href="status.html">Check Status</a> |
+      <a href="login.html">Admin</a>
+    </p>
+  </footer>
+
+  <script>
+    function registerParent(e) {
+      e.preventDefault();
+      
+      const name = document.getElementById('regName').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const phone = document.getElementById('regPhone').value.trim();
+      const password = document.getElementById('regPassword').value;
+      const confirm = document.getElementById('regConfirm').value;
+      const msgDiv = document.getElementById('regMessage');
+      
+      // Validation
+      if (!name || !email || !phone || !password || !confirm) {
+        msgDiv.innerHTML = '⚠️ Please fill in all required fields.';
+        msgDiv.style.backgroundColor = '#fef3c7';
+        msgDiv.style.color = '#92400e';
+        msgDiv.style.border = '1px solid #fbbf24';
+        return;
+      }
+      
+      if (password.length < 6) {
+        msgDiv.innerHTML = '❌ Password must be at least 6 characters long.';
+        msgDiv.style.backgroundColor = '#fee2e2';
+        msgDiv.style.color = '#991b1b';
+        msgDiv.style.border = '1px solid #fca5a5';
+        return;
+      }
+      
+      if (password !== confirm) {
+        msgDiv.innerHTML = '❌ Passwords do not match. Please try again.';
+        msgDiv.style.backgroundColor = '#fee2e2';
+        msgDiv.style.color = '#991b1b';
+        msgDiv.style.border = '1px solid #fca5a5';
+        return;
+      }
+      
+      // Basic email validation
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(email)) {
+        msgDiv.innerHTML = '❌ Please enter a valid email address.';
+        msgDiv.style.backgroundColor = '#fee2e2';
+        msgDiv.style.color = '#991b1b';
+        msgDiv.style.border = '1px solid #fca5a5';
+        return;
+      }
+      
+      // Demo success (will be replaced with Supabase Auth later)
+      msgDiv.innerHTML = '✅ Registration successful! Redirecting to login page...';
+      msgDiv.style.backgroundColor = '#f0fdf4';
+      msgDiv.style.color = '#166534';
+      msgDiv.style.border = '1px solid #86efac';
+      
+      // Log data (for demo)
+      console.log('Registration data:', { name, email, phone });
+      
+      // Simulate redirect after 2 seconds
+      setTimeout(() => {
+        // window.location.href = 'login.html'; // Uncomment for actual redirect
+        alert('Demo mode: In a live system, you would be redirected to login.');
+      }, 2000);
+      
+      // Clear form (optional)
+      // document.getElementById('registrationForm').reset();
+    }
+    
+    // Real-time password match check (optional enhancement)
+    document.getElementById('regConfirm').addEventListener('input', function() {
+      const password = document.getElementById('regPassword').value;
+      const confirm = this.value;
+      const msgDiv = document.getElementById('regMessage');
+      
+      if (confirm && password !== confirm) {
+        msgDiv.innerHTML = '⚠️ Passwords do not match.';
+        msgDiv.style.backgroundColor = '#fef3c7';
+        msgDiv.style.color = '#92400e';
+        msgDiv.style.border = '1px solid #fbbf24';
+      } else if (confirm && password === confirm) {
+        msgDiv.innerHTML = '✅ Passwords match!';
+        msgDiv.style.backgroundColor = '#f0fdf4';
+        msgDiv.style.color = '#166534';
+        msgDiv.style.border = '1px solid #86efac';
+      } else {
+        msgDiv.innerHTML = '';
+        msgDiv.style.backgroundColor = 'transparent';
+        msgDiv.style.border = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
