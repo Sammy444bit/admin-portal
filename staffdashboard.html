@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staff Dashboard | Evans Higher Secondary School</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
+    body { background: #f1f5f9; min-height: 100vh; display: flex; flex-direction: column; }
+    
+    .navbar { background: #0a2f44; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; color: white; border-bottom: 4px solid #d4af37; }
+    .navbar .logo img { height: 50px; width: auto; }
+    .navbar .nav-links { display: flex; gap: 1.8rem; align-items: center; }
+    .navbar .nav-links a { color: white; text-decoration: none; font-weight: 500; padding: 0.5rem 0.2rem 0.7rem; position: relative; }
+    .navbar .nav-links a:hover { color: #d4af37; }
+    .navbar .nav-links a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 4px; background: #d4af37; transition: width 0.3s; }
+    .navbar .nav-links a:hover::after { width: 100%; }
+    .navbar .nav-links a.active { color: #d4af37; font-weight: 600; }
+    .navbar .nav-links a.active::after { width: 100%; }
+    .navbar .nav-links button { background: #d4af37; color: #0a2f44; border: none; padding: 0.5rem 1.2rem; border-radius: 30px; font-weight: 600; cursor: pointer; }
+    .navbar .nav-links button:hover { background: #e6c44d; }
+    
+    .container { max-width: 1400px; margin: 2rem auto; padding: 0 1.5rem; flex: 1; width: 100%; }
+    
+    .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+    .dashboard-header h1 { color: #0a2f44; }
+    
+    .filter-bar { display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .search-box input { width: 100%; padding: 0.75rem 1rem; border: 1.5px solid #cbd5e1; border-radius: 30px; font-size: 1rem; }
+    .filter-select { padding: 0.75rem 1rem; border: 1.5px solid #cbd5e1; border-radius: 30px; background: white; }
+    .export-btn { background: #0a2f44; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 30px; cursor: pointer; }
+    
+    .table-wrapper { background: white; border-radius: 20px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; padding: 1.2rem 1rem; background: #f8fafc; color: #0a2f44; font-weight: 600; border-bottom: 2px solid #e2e8f0; }
+    td { padding: 1rem; border-bottom: 1px solid #e2e8f0; }
+    tr:hover { background: #f8fafc; }
+    
+    .status-badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 30px; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; }
+    .status-pending { background: #fef3c7; color: #92400e; }
+    .status-approved { background: #d1fae5; color: #065f46; }
+    .status-rejected { background: #fee2e2; color: #991b1b; }
+    
+    .footer { background: #0a2f44; color: #ccc; text-align: center; padding: 1.5rem; margin-top: 2rem; }
+    .footer a { color: #d4af37; text-decoration: none; }
+    
+    @media (max-width: 768px) { .dashboard-header { flex-direction: column; align-items: start; gap: 1rem; } }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo"><img src="image.png" alt="Evans Higher Secondary School Logo"></div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="apply.html">Apply</a>
+      <a href="status.html">Check Status</a>
+      <a href="staff-dashboard.html" class="active">Staff</a>
+      <button id="logoutBtn">Logout</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="dashboard-header">
+      <h1>📋 Staff View – Applications</h1>
+      <p style="color:#64748b;">Read‑only access. Please contact an administrator for status changes.</p>
+    </div>
+
+    <div class="filter-bar">
+      <div class="search-box" style="flex:1; min-width:250px;">
+        <input type="text" id="searchInput" placeholder="🔍 Search by name or email...">
+      </div>
+      <select id="statusFilter" class="filter-select">
+        <option value="all">All Status</option>
+        <option value="pending">Pending</option>
+        <option value="approved">Approved</option>
+        <option value="rejected">Rejected</option>
+      </select>
+      <button class="export-btn" onclick="exportToCSV()">📥 Export CSV</button>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th><th>Student Name</th><th>Grade</th><th>Parent</th><th>Email</th><th>Phone</th><th>Submitted</th><th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <tr><td colspan="8" style="text-align:center; padding:2rem;">Loading applications...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>© 2026 Evans Higher Secondary School. All rights reserved. | Staff Dashboard</p>
+  </footer>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+    const supabaseUrl = 'YOUR_SUPABASE_URL';     // <-- replace
+    const supabaseKey = 'YOUR_ANON_KEY';         // <-- replace
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    // Check staff login
+    async function checkAuth() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        window.location.href = 'login.html?role=admin';
+        return false;
+      }
+      return true;
+    }
+
+    let allApplications = [];
+
+    async function fetchApplications() {
+      const { data, error } = await supabase
+        .from('applications')
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      if (error) {
+        document.getElementById('tableBody').innerHTML = `<tr><td colspan="8" style="color:red;">Error: ${error.message}</td></tr>`;
+        return;
+      }
+      allApplications = data || [];
+      renderTable();
+    }
+
+    function renderTable() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      const statusFilter = document.getElementById('statusFilter').value;
+      let filtered = allApplications.filter(app => {
+        const matchSearch = app.student_name.toLowerCase().includes(search) ||
+                            app.email.toLowerCase().includes(search) ||
+                            app.parent_name.toLowerCase().includes(search);
+        const matchStatus = statusFilter === 'all' || app.status === statusFilter;
+        return matchSearch && matchStatus;
+      });
+
+      const tbody = document.getElementById('tableBody');
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;">No applications found.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(app => {
+        const statusClass = `status-${app.status}`;
+        return `
+          <tr>
+            <td>#${app.id}</td>
+            <td><strong>${app.student_name}</strong></td>
+            <td>${app.grade_applying}</td>
+            <td>${app.parent_name}</td>
+            <td>${app.email}</td>
+            <td>${app.phone}</td>
+            <td>${new Date(app.created_at).toLocaleDateString('en-GB')}</td>
+            <td><span class="status-badge ${statusClass}">${app.status.charAt(0).toUpperCase() + app.status.slice(1)}</span></td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    window.exportToCSV = function() {
+      if (allApplications.length === 0) return alert('No data to export.');
+      const headers = ['ID','Student Name','DOB','Parent','Email','Phone','Address','Previous School','Grade','Status','Submitted'];
+      const rows = allApplications.map(a => [
+        a.id, a.student_name, a.dob, a.parent_name, a.email, a.phone,
+        a.address, a.previous_school || '', a.grade_applying, a.status,
+        new Date(a.created_at).toLocaleString()
+      ]);
+      let csv = headers.join(',') + '\n' + rows.map(r => r.map(cell => `"${cell}"`).join(',')).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `admissions_export_${new Date().toISOString().slice(0,10)}.csv`;
+      a.click();
+    };
+
+    document.getElementById('searchInput').addEventListener('input', renderTable);
+    document.getElementById('statusFilter').addEventListener('change', renderTable);
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      await supabase.auth.signOut();
+      window.location.href = 'login.html';
+    });
+
+    (async () => {
+      if (await checkAuth()) fetchApplications();
+    })();
+  </script>
+</body>
+</html>

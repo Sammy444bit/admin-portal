@@ -88,7 +88,6 @@
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-    // ⚠️ REPLACE WITH YOUR ACTUAL SUPABASE URL AND ANON KEY
     const supabaseUrl = 'https://jrjsgfemezusuwcondku.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpyanNnZmVtZXp1c3V3Y29uZGt1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNzA5ODYsImV4cCI6MjA5MTc0Njk4Nn0.55-KRYeoa3DDuZA5g4js5WWPB10yCKNf5gWtcwRH3V8';
     const supabase = createClient(supabaseUrl, supabaseKey);
@@ -159,8 +158,7 @@
           window.location.href = 'student-dashboard.html';
         } else {
           // Parent portal placeholder
-          alert('Parent portal is under construction. You are logged in as: ' + email);
-          // window.location.href = 'parent-dashboard.html';
+           window.location.href = 'parent-dashboard.html';
         }
       }, 1000);
     });
@@ -174,6 +172,16 @@
     }
     // After successful sign in:
 const userEmail = data.user.email;
+const email = data.user.email;
+
+if (email.includes('admin')) {
+  window.location.href = 'admin-dashboard.html';
+} else if (email.includes('staff')) {
+  window.location.href = 'staff-dashboard.html';
+} else {
+  // Default for parents (and others) – they go to parent dashboard
+  window.location.href = 'parent-dashboard.html';
+}
 
 // Determine role by email pattern (you can customize these)
 if (userEmail.includes('admin')) {
