@@ -172,6 +172,21 @@
       // You could redirect to a default page or check user role from database
       // For now, we'll just log it
     }
+    // After successful sign in:
+const userEmail = data.user.email;
+
+// Determine role by email pattern (you can customize these)
+if (userEmail.includes('admin')) {
+  window.location.href = 'admin-dashboard.html';
+} else if (userEmail.includes('staff')) {
+  window.location.href = 'staff-dashboard.html';
+} else if (userEmail.includes('parent')) {
+  window.location.href = 'parent-dashboard.html';
+} else {
+  // Default fallback – maybe student or handle unknown
+  window.location.href = 'student-dashboard.html';
+}
+  
   </script>
 </body>
 </html>
